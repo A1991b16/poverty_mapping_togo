@@ -106,6 +106,143 @@ print(togo_precip)
 print(togo_temp)
 
 
+#================================================
+# 4. Visualisation des données climatiques
+#================================================
+
+# Précipitations moyennes annuelles
+togo_precip_annual <- mean(togo_precip)
+
+# Carte
+tmap_mode("plot")
+
+map_precip <- tm_shape(togo_precip_annual) +
+  tm_raster(
+    palette = "Blues",
+    title   = "Précipitations (mm)"
+  ) +
+  tm_shape(togo_regions_sf) +
+  tm_borders(col = "black", lwd = 1.5) +
+  tm_layout(
+    main.title          = "Précipitations moyennes annuelles - Togo",
+    main.title.size     = 1,
+    main.title.position = "center",
+    legend.outside      = TRUE
+  ) +
+  tm_compass(position = c("right", "top")) +
+  tm_scale_bar(position = c("left", "bottom"))
+
+#================================================
+# 5. Téléchargement données topographiques
+#    Altitude SRTM
+#================================================
+
+# Altitude du Togo
+togo_elevation <- geodata::elevation_30s(
+  country = "TGO",
+  path    = "data/raw"
+)
+
+# Vérification
+print(togo_elevation)
+
+# Carte
+
+tmap_mode("plot")
+
+map_elevation <- tm_shape(togo_elevation) +
+  tm_raster(
+    palette = "terrain",
+    title  = "Altitude du Togo (m)"
+  ) +
+  tm_shape(togo_regions_sf)+
+  tm_borders(col = "black", lwd = 1.5) +
+  tm_layout(
+    main.title          = "Topographie du Togo",
+    main.title.size     = 1,
+    main.title.position = "center",
+    legend.outside      = TRUE
+  ) +
+  tm_compass(position = c("right", "top")) +
+  tm_scale_bar(position = c("left", "bottom"))
+
+
+#================================================
+# 6. Téléchargement données de populations
+#    Année 2020
+#================================================
+
+# Téléchargement direct WorldPop
+url <- "https://data.worldpop.org/GIS/Population/Global_2000_2020/2020/TGO/tgo_ppp_2020.tif"
+
+download.file(
+  url      = url,
+  destfile = "data/raw/togo_population_2020.tif",
+  mode     = "wb"
+)
+
+# Charger le fichier téléchargé
+Togo_population <- terra::rast("data/raw/togo_population_2020.tif")
+
+# Vérification
+
+print(Togo_population)
+
+
+#================================================
+# . Visualisation des données de population
+#================================================
+
+tmap_mode("plot")
+
+map_population <-tm_shape(Togo_population) +
+  tm_raster(
+    palette = "YlOrRd",
+    title = "population du togo (2020)"
+  ) +
+  tm_shape(togo_regions_sf) +
+  tm_borders(col = "black", lwd = 1.5) +
+  tm_layout(
+    main.title = "Répartition de la population du Togo",
+    main.title.size = 1,
+    main.title.position = "center",
+    legend.outside = TRUE
+  ) +
+  tm_compass(position = c("right", "top")) +
+  tm_scale_bar(position = c("left", "bottom"))
+  
+  
+  ## graphique avec échelle logarithmique 
+  
+tmap_mode("plot")
+tm_shape(log1p(Togo_population)) +
+  tm_raster(
+    palette = "YlOrRd",
+    title   = "Population log(habitants/km²)"
+  ) +
+  tm_shape(togo_regions_sf) +
+  tm_borders(col = "black", lwd = 1.5) +
+  tm_layout(
+    main.title          = "Répartition de la population du Togo (échelle log)",
+    main.title.size     = 1,
+    main.title.position = "center",
+    legend.outside      = TRUE
+  ) +
+  tm_compass(position = c("right", "top")) +
+  tm_scale_bar(position = c("left", "bottom")) 
+
+
+#================================================
+# 7. Export des cartes
+#================================================
+
+tmap_save(
+  map_precip,
+  filename = "outputs/maps/01_precipitations_togo.png",
+  dpi      = 300,
+  width    = 8,
+  height   = 10
+)
 
 
 
