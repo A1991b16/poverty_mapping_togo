@@ -82,8 +82,28 @@ tm_shape(togo_prefectures_sf) +
 
 
 
+#================================================
+# 3. Téléchargement données climatiques
+#    Précipitations WorldClim
+#================================================
 
+# Précipitations moyennes mensuelles (WorldClim)
+togo_precip <- geodata::worldclim_country(
+  country  = "TGO",
+  var      = "prec",
+  path     = "data/raw"
+)
 
+# Température moyenne
+togo_temp <- geodata::worldclim_country(
+  country  = "TGO",
+  var      = "tavg",
+  path     = "data/raw"
+)
+
+# Vérification
+print(togo_precip)
+print(togo_temp)
 
 
 
