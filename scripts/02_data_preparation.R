@@ -1,7 +1,7 @@
 #================================================
 # Projet : Poverty Mapping Togo
 # Script : 02 - Préparation des données
-# Auteur : Ton Nom
+# Auteur : Womenyao Komla Sedzro EKLOU
 # Date   : Avril 2026
 # Objectif : Nettoyer et préparer les données
 #            pour le modèle ML
@@ -156,7 +156,22 @@ cat("\nDimensions :", nrow(togo_data), "préfectures x",
 
 # Sauvegarder en format shapefile
 
+sf::st_write(
+  togo_data,
+  "data/processed/togo_prefectures_data.gpkg",
+  delete_if_existS = TRUE
+)
 
+
+
+# Sauvegarder aussi en CSV sans géométrie
+
+togo_data |>
+  sf::st_drop_geometry() |>
+  write.csv("data/processed/togo_prefectures_data.csv")
+
+
+cat("✓ Dataset sauvegardé en GeoPackage et CSV\n")
 
 
 
