@@ -116,6 +116,71 @@ MetricBestmodelTgcluster <- metrics(TgclusterPrediction, truth = wealth_score,
 print(MetricBestmodelTgcluster)
 
 
+#================================================
+# 6. Visualisation des résultats
+#================================================
 
+# Graphique prédictions vs valeurs réelles
+ggplot(TgclusterPrediction,
+       aes(x = wealth_score, y = .pred)) +
+  geom_point(color = "steelblue", alpha = 0.7, size = 3) +
+  geom_abline(slope = 1, intercept = 0,
+              color = "red", linetype = "dashed", lwd = 1) +
+  labs(
+    title    = "Prédictions vs Valeurs réelles — XGBoost",
+    subtitle = paste("R² =", round(0.856, 3),
+                     "| RMSE =", round(29712, 0)),
+    x        = "Wealth Score réel (DHS)",
+    y        = "Wealth Score prédit (XGBoost)"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title    = element_text(size = 14, face = "bold"),
+    plot.subtitle = element_text(size = 11, color = "gray50")
+  )
 
+# Sauvegarder
+ggsave(
+  "outputs/figures/01_predictions_vs_real.png",
+  dpi    = 300,
+  width  = 8,
+  height = 6
+)
 
+cat("✓ Graphique sauvegardé\n")
+
+#================================================
+# 7. Importance des variables
+#================================================
+
+# Extraire l'importance des variables
+importance_vars <- BestwkflowTgluster |>
+  extract_fit_parsnip() |>
+  vip::vi()
+
+# Graphique
+ggplot(importance_vars,
+       aes(x = reorder(Variable, Importance),
+           y = Importance)) +
+  geom_col(fill = "steelblue", alpha = 0.8) +
+  coord_flip() +
+  labs(
+    title = "Importance des variables — XGBoost",
+    subtitle = "Contribution de chaque variable satellite à la prédiction",
+    x = "Variable",
+    y = "Importance"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 14, face = "bold")
+  )
+
+# Sauvegarder
+ggsave(
+  "outputs/figures/02_variable_importance.png",
+  dpi   = 300,
+  width = 8,
+  height = 6
+)
+
+cat("✓ Graphique importance variables sauvegardé\n")
