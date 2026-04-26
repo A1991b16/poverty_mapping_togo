@@ -198,7 +198,23 @@ cat("- Valeurs manquantes :\n")
 print(colSums(is.na(sf::st_drop_geometry(dataset_ml_clean))))
 
 
+#================================================
+# 6. Sauvegarde du dataset ML
+#================================================
 
+# Sauvegarder en GeoPackage (avec géométrie)
+sf::st_write(
+  dataset_ml_clean,
+  "data/processed/dataset_ml_clusters.gpkg",
+  delete_if_exists = TRUE
+)
+
+# Sauvegarder en CSV (sans géométrie)
+dataset_ml_clean |>
+  sf::st_drop_geometry() |>
+  write_csv("data/processed/dataset_ml_clusters.csv")
+
+cat("✓ Dataset ML sauvegardé !\n")
 
 
 

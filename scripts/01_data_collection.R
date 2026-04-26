@@ -245,6 +245,21 @@ tmap_save(
 )
 
 
+tmap_save(
+  map_elevation,
+  filename = "outputs/maps/02_elevation_togo.png",
+  dpi      = 300,
+  width    = 8,
+  height   = 10
+)
+
+tmap_save(
+  map_population,
+  filename = "outputs/maps/03_population_togo.png",
+  dpi      = 300,
+  width    = 8,
+  height   = 10
+)
 
 
 
